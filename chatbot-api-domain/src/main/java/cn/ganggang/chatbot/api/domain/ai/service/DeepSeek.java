@@ -1,6 +1,6 @@
 package cn.ganggang.chatbot.api.domain.ai.service;
 
-import cn.ganggang.chatbot.api.domain.ai.IOpenAI;
+import cn.ganggang.chatbot.api.domain.ai.IDeepSeek;
 import cn.ganggang.chatbot.api.domain.ai.model.aggregates.AIAnswer;
 import cn.ganggang.chatbot.api.domain.ai.model.vo.Choices;
 import com.alibaba.fastjson.JSON;
@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
-public class OpenAI implements IOpenAI {
+public class DeepSeek implements IDeepSeek {
 
-    private Logger logger = LoggerFactory.getLogger(OpenAI.class);
+    private Logger logger = LoggerFactory.getLogger(DeepSeek.class);
 
-    @Value("${chatbot-api.openAiKey}")
-    private String openAiKey;
+    @Value("${chatbot-api.deepSeekApiKey}")
+    private String deepSeekApiKey;
 
     @Override
     public String doChatGPT(String question) throws IOException {
@@ -34,7 +34,7 @@ public class OpenAI implements IOpenAI {
 
         HttpPost post = new HttpPost("https://api.deepseek.com/chat/completions");
         post.addHeader("Content-Type", "application/json");
-        post.addHeader("Authorization", "Bearer " + openAiKey);
+        post.addHeader("Authorization", "Bearer " + deepSeekApiKey);
 
         String paramJson = "{\n" +
                 "        \"model\": \"deepseek-chat\",\n" +

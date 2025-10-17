@@ -1,8 +1,8 @@
 package cn.ganggang.chatbot.api.domain.zsxq.service;
 
 import cn.ganggang.chatbot.api.domain.zsxq.IZsxqApi;
-import cn.ganggang.chatbot.api.domain.zsxq.model.aggregates.UnAnsweredQuestionsAggregates;
-import cn.ganggang.chatbot.api.domain.zsxq.model.req.AnswerReq;
+import cn.ganggang.chatbot.api.domain.zsxq.model.aggregates.UnCommentedAggregates;
+import cn.ganggang.chatbot.api.domain.zsxq.model.req.CommentReq;
 import cn.ganggang.chatbot.api.domain.zsxq.model.req.ReqData;
 import cn.ganggang.chatbot.api.domain.zsxq.model.res.AnswerRes;
 import com.alibaba.fastjson.JSON;
@@ -28,10 +28,10 @@ public class ZsxqApi implements IZsxqApi {
     private Logger logger = LoggerFactory.getLogger(ZsxqApi.class);
 
     @Override
-    public UnAnsweredQuestionsAggregates queryUnAnsweredQuestionsTopicId(String GroupId, String cookie) throws IOException {
+    public UnCommentedAggregates queryUnCommentedTopicId(String GroupId, String cookie) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/" + GroupId + "/topics?scope=all&count=2");
+        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/" + GroupId + "/topics?scope=all&count=20");
 
         get.addHeader("cookie", cookie);
         get.addHeader("Content-Type", "application/json; charset=utf-8");
@@ -40,14 +40,14 @@ public class ZsxqApi implements IZsxqApi {
         if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String jsonStr = EntityUtils.toString(response.getEntity());
             logger.info("拉取提问数据。groupId:{}, jsonStr:{}", GroupId, jsonStr);
-            return JSON.parseObject(jsonStr, UnAnsweredQuestionsAggregates.class);
+            return JSON.parseObject(jsonStr, UnCommentedAggregates.class);
         } else {
             throw new RuntimeException("queryUnAnsweredQuestionsTopicId Err Code is" + response.getStatusLine().getStatusCode());
         }
     }
 
     @Override
-    public boolean answer(String GroupId, String cookie, String topicId, String text, boolean silenced) throws IOException {
+    public boolean comment(String GroupId, String cookie, String topicId, String text) throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -67,8 +67,8 @@ public class ZsxqApi implements IZsxqApi {
                 "}";
         **/
 
-        AnswerReq answerReq = new AnswerReq(new ReqData(text, silenced));
-        String paramJson = JSONObject.toJSONString(answerReq);
+        CommentReq commentReq = new CommentReq(new ReqData(text));
+        String paramJson = JSONObject.toJSONString(commentReq);
 
         StringEntity stringEntity = new StringEntity(paramJson, ContentType.create("text/json", "UTF-8"));
         post.setEntity(stringEntity);

@@ -17,10 +17,11 @@ import java.io.IOException;
 public class ApiTest {
 
     @Test
-    public void query_unanswered_questions() throws IOException {
+    public void query_uncommented() throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=1");
+        //HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=1");
+        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=20");
 
         get.addHeader("cookie", "zsxq_access_token=56D8A2A7-7B61-4CA6-820A-AF0DE57921DE_2D9B3516DEAD833D; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22814885545522542%22%2C%22first_id%22%3A%2219927d2644d79a-045327f672c2d3c-26011051-3686400-19927d2644e1543%22%2C%22props%22%3A%7B%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTk5MjdkMjY0NGQ3OWEtMDQ1MzI3ZjY3MmMyZDNjLTI2MDExMDUxLTM2ODY0MDAtMTk5MjdkMjY0NGUxNTQzIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiODE0ODg1NTQ1NTIyNTQyIn0%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22814885545522542%22%7D%2C%22%24device_id%22%3A%2219927d2644d79a-045327f672c2d3c-26011051-3686400-19927d2644e1543%22%7D");
         get.addHeader("Content-Type", "application/json; charset=utf-8");
@@ -36,7 +37,7 @@ public class ApiTest {
     }
 
     @Test
-    public void answer() throws IOException {
+    public void comment() throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 

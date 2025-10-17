@@ -6,7 +6,7 @@ import cn.ganggang.chatbot.api.domain.zsxq.model.res.RespData;
  * 未回答问题的聚合信息
  */
 
-public class UnAnsweredQuestionsAggregates {
+public class UnCommentedAggregates {
 
     private boolean succeeded;
     private RespData resp_data;
