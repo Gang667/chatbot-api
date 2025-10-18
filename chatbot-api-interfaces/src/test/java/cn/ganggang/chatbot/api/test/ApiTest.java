@@ -17,10 +17,11 @@ import java.io.IOException;
 public class ApiTest {
 
     @Test
-    public void query_unanswered_questions() throws IOException {
+    public void query_uncommented() throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
-        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=1");
+        //HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=1");
+        HttpGet get = new HttpGet("https://api.zsxq.com/v2/groups/28885518425541/topics?scope=all&count=20");
 
         get.addHeader("cookie", "");
         get.addHeader("Content-Type", "application/json; charset=utf-8");
@@ -36,7 +37,7 @@ public class ApiTest {
     }
 
     @Test
-    public void answer() throws IOException {
+    public void comment() throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 

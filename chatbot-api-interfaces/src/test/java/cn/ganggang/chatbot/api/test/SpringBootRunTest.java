@@ -1,21 +1,28 @@
 package cn.ganggang.chatbot.api.test;
 
-import cn.ganggang.chatbot.api.domain.ai.service.OpenAI;
+import cn.ganggang.chatbot.api.domain.ai.service.DeepSeek;
 import cn.ganggang.chatbot.api.domain.zsxq.IZsxqApi;
-import cn.ganggang.chatbot.api.domain.zsxq.model.aggregates.UnAnsweredQuestionsAggregates;
+import cn.ganggang.chatbot.api.domain.zsxq.model.aggregates.UnCommentedAggregates;
+import cn.ganggang.chatbot.api.domain.zsxq.model.vo.Topics;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
+/**
+ * 测试：
+ * 1. 获取问题接口
+ * 2. 回答问题接口
+ * 3. 调用deepseek接口
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SpringBootRunTest {
@@ -29,18 +36,31 @@ public class SpringBootRunTest {
 
     @Resource
     private IZsxqApi zsxqApi;
-    @Autowired
-    private OpenAI openAI;
+    @Resource
+    private DeepSeek deepSeek;
 
     @Test
     public void test_zsxqApi() throws IOException {
-        UnAnsweredQuestionsAggregates unAnsweredQuestionsAggregates = zsxqApi.queryUnAnsweredQuestionsTopicId(groupId, cookie);
-        logger.info("测试结果：{}", JSON.toJSONString(unAnsweredQuestionsAggregates));
+        UnCommentedAggregates unCommentedAggregates = zsxqApi.queryUnCommentedTopicId(groupId, cookie);
+        logger.info("测试结果：{}", JSON.toJSONString(unCommentedAggregates));
+
+        List<Topics> topics = unCommentedAggregates.getResp_data().getTopics();
+        for (Topics topic : topics) {
+            String topicId = topic.getTopic_id();
+            String text = topic.getTalk().getText();
+            String ownerName = topic.getTalk().getOwner().getName();
+            if(ownerName.equals("岗岗")) {
+                logger.info("topicId：{} text：{}", topicId, text);
+
+                // 回答问题
+                zsxqApi.comment(groupId, cookie, topicId, deepSeek.doChatGPT(text));
+            }
+        }
     }
 
     @Test
     public void test_openAi() throws IOException {
-        String response = openAI.doChatGPT("帮我写一个java冒泡排序");
+        String response = deepSeek.doChatGPT("帮我写一个java冒泡排序");
         logger.info("测试结果：{}", response);
     }
 }
